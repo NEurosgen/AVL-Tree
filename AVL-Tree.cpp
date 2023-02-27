@@ -33,7 +33,7 @@ class AVLTree {
         makeEmpty(t->left);
         delete t;
     }
-    Node* S_left(Node*& t) {
+    Node* S_left(Node*& t) {//small left rotation
         Node* u = t->right;
         t->right = u->left;
         u->left = t;
@@ -41,7 +41,7 @@ class AVLTree {
         u->height = max(height(t->right), t->height) + 1;
         return u;
     }
-    Node* B_left(Node*& t) {
+    Node* B_left(Node*& t) {  //Big left rotation
         t->right = S_left(t->right);
         return S_left(t);
     }
@@ -108,6 +108,7 @@ class AVLTree {
         return t->height;
     }
     Node* remove(T& val,Node* t) {
+        Node* temp;
         if (t == NULL) {
             return t;
         }
@@ -117,15 +118,16 @@ class AVLTree {
         if (t->data >val) {
             t->left = remove( val,t->left);
         }
-        else if(t->left && t->right) {
-            Node* temp = t;
+        else if(t->left!=nullptr && t->right!=nullptr) {
+            
             temp = findMin(t->right);
             t->data = temp->data;
             t->right = remove(t->data,t->right);
 
+
         }
         else {
-            Node* temp = t;
+            temp = t;
             if (t->left == NULL) {
                 t = t->right;
             }
@@ -142,10 +144,10 @@ class AVLTree {
         
 
 
-        if (height(t->left) - height(t->right) == 2)
+        if (height(t->left) - height(t->right) == -2)
         {
             
-            if (height(t->left->left) - height(t->left->right) == 1)
+            if ((height(t->right->right) - height(t->right->left)) == 1)
                 return S_left(t);
             
             else
@@ -155,7 +157,7 @@ class AVLTree {
         else if (height(t->right) - height(t->left) == 2)
         {
             
-            if (height(t->right->right) - height(t->right->left) == 1)
+            if (height(t->left->left) - height(t->left->right) == 1)
                 return S_right(t);
             
             else
@@ -175,7 +177,7 @@ class AVLTree {
     int getBalance(Node* t)
     {
         if (t == NULL)
-            return 0;
+            return -1;
         else
             return height(t->left) - height(t->right);
     }
@@ -207,16 +209,26 @@ public:
 
 int main()
 {
-    AVLTree<char> tree;
-    tree.insert('2');
-    tree.insert('3');
-    tree.insert('5');
-    tree.insert('7');
-    tree.insert('4');
-    tree.insert('2');
-    tree.insert('5');
-    tree.insert('2');
-    tree.remove('1');
+    AVLTree<int> tree;
+
+    // Insert values
+    tree.insert(10);
+    tree.insert(20);
+    tree.insert(30);
+    tree.insert(40);
+    tree.insert(50);
+    tree.insert(25);
+
+    // Display the tree
+    cout << "Tree after inserting values: ";
+    tree.display();
+
+    // Remove values
+    tree.remove(30);
+    tree.remove(40);
+
+    // Display the tree after removal
+    cout << "Tree after removing values: ";
     tree.display();
     
 }
