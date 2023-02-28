@@ -70,8 +70,8 @@ class AVLTree {
             }
         }
         t->height = height(t->left) - height(t->right);
-        if (getBalance(t) == -2) {
-            if (t->left && getBalance(t->left) == -1 || getBalance(t->left) == 0) {
+        if (getBalance(t) == 2) {
+            if (t->left && getBalance(t->left) == 1 || getBalance(t->left) == 0) {
 
                 t = S_right(t);
                 
@@ -104,6 +104,30 @@ class AVLTree {
         t->height = max(height(t->left), height(t->right)) + 1;
 
         return t;
+    }
+    Node* exist(T& val, Node* root) {
+        Node* t = root;
+        if (t == NULL) {
+            return t;
+        }
+        
+        while (1) {
+            if (t == NULL) {
+                return t;
+            }
+            if (val < t->data) {
+                t = t->left;
+                continue;
+            }
+            if (val > t->data) {
+                t = t->right;
+                continue;
+            }
+            if (val == t->data) {
+                return t;
+            }
+        }
+       
     }
     Node* findMax(Node* t)
     {
@@ -185,7 +209,11 @@ public:
     {
         root = NULL;
     }
-
+    Node* exist(T val) {
+        Node* t= exist(val, root);
+        
+        return  t;
+    }
     void insert(T x)
     {
         root = insert(x, root);
@@ -211,25 +239,20 @@ int main()
     AVLTree<int> tree;
 
     // Insert values
-    tree.insert(10);
-    tree.insert(20);
-    tree.insert(30);
-    tree.insert(40);
-    tree.insert(50);
-    tree.insert(25);
-  
+    for (int i = 0; i < 20; ++i) {
+        tree.insert(i);
+    }
 
+    tree.remove(6);
+    std::cout<<tree.exist(2)->data<<" ";
+    std::cout << tree.exist(3)->data << " ";
+    std::cout << tree.exist(-1) << " ";
     tree.display();
 
     // Remove values
-    tree.remove(10);
-    tree.remove(30);
-    tree.remove(40);
-    tree.remove(20);
-    tree.remove(25);
-    tree.remove(50);
+   
     cout << "Tree after removing values: ";
-    tree.display();
+ 
    
     
 }
