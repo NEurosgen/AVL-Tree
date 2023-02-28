@@ -57,6 +57,33 @@ class AVLTree {
         t->left = S_right(t->left);
         return S_right(t);
     }
+    Node* balance(Node* t){
+        if (getBalance(t) == -2) {
+            if (t->right && getBalance(t->right) == -1 || getBalance(t->right) == 0) {
+                
+                t = S_left(t);
+                
+            }
+            else if (t->right && t->right->left && getBalance(t->right) == 1 && (getBalance(t->right->left) == 1 || getBalance(t->right->left) == -1 || getBalance(t->right->left) == 0)) {
+                t = B_left(t);
+
+            }
+        }
+        t->height = height(t->left) - height(t->right);
+        if (getBalance(t) == -2) {
+            if (t->left && getBalance(t->left) == -1 || getBalance(t->left) == 0) {
+
+                t = S_right(t);
+                
+            }
+            if (t->left && t->left->right && getBalance(t->left) == 1 && (getBalance(t->left->right) == 1 || getBalance(t->left->right) == -1 || getBalance(t->left->right) == 0)) {
+                t = B_right(t);
+            }
+        }
+        t->height = height(t->left) - height(t->right);
+        return t;
+    
+    }
     Node* insert(T& x, Node* t) {
         if (t == NULL) {
             t = new Node;
@@ -67,26 +94,12 @@ class AVLTree {
         }
         else if (t->data > x) {
             t->left = insert(x, t->left);
-            if (height(t->left) - height(t->right) == 2) {
-                if (x < t->left->data) {
-                    t = S_right(t);
-                }
-                else {
-                    t = B_right(t);
-                }
-            }
+            t = balance(t);
 
         }
         else if (t->data < x) {
             t->right = insert(x, t->right);
-            if (height(t->right) - height(t->left) == -2) {
-                if (x < t->right->data) {
-                    t = S_left(t);
-                }
-                else {
-                    t = B_left(t);
-                }
-            }
+            t = balance(t);
         }
         t->height = max(height(t->left), height(t->right)) + 1;
 
@@ -103,7 +116,7 @@ class AVLTree {
     }
     int height(Node* t) {
         if (t == NULL  || t==nullptr) {
-            return -1;
+            return 0;
         }
         return t->height;
     }
@@ -148,31 +161,7 @@ class AVLTree {
         
 
 
-        if (height(t->left) - height(t->right) == -2)
-        {
-            
-            if (t->right!=NULL &&((height(t->right->right) - height(t->right->left)) == 1))
-                return S_left(t);
-            
-            else {
-                if (t->right!= NULL && t->right->right!=NULL) {
-                    return B_left(t);
-                }
-            }
-
-        
-
-        
-            
-            if (t->left!=NULL&& (height(t->left->left) - height(t->left->right)) == 1)
-                return S_right(t);
-            
-            else {
-                if (t->left != NULL && t->left->left != NULL) {
-                    return B_right(t);
-                }
-            }
-        }
+        t = balance(t);
         return t;
         
     }
@@ -187,7 +176,7 @@ class AVLTree {
     int getBalance(Node* t)
     {
         if (t == NULL)
-            return -1;
+            return 0;
         else
             return height(t->left) - height(t->right);
     }
@@ -222,27 +211,26 @@ int main()
     AVLTree<int> tree;
 
     // Insert values
-    tree.insert(1);
-    tree.insert(2);
-    tree.insert(3);
-    tree.insert(4);
-    tree.insert(5);
-    tree.insert(6);
+    tree.insert(10);
+    tree.insert(20);
+    tree.insert(30);
+    tree.insert(40);
+    tree.insert(50);
+    tree.insert(25);
+  
 
-    // Display the tree
-    cout << "Tree after inserting values: ";
     tree.display();
 
     // Remove values
-    tree.remove(3);
-    tree.remove(7);
-    tree.remove(1);
-    tree.remove(-2);
-    tree.remove(3);
-    tree.remove(1);
-    // Display the tree after removal
+    tree.remove(10);
+    tree.remove(30);
+    tree.remove(40);
+    tree.remove(20);
+    tree.remove(25);
+    tree.remove(50);
     cout << "Tree after removing values: ";
     tree.display();
+   
     
 }
 
