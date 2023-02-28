@@ -59,28 +59,29 @@ class AVLTree {
     }
     Node* balance(Node* t){
         if (getBalance(t) == -2) {
-            if (t->right && getBalance(t->right) == -1 || getBalance(t->right) == 0) {
+            if (getBalance(t->right) == -1 || getBalance(t->right) == 0) {
                 
                 t = S_left(t);
-                
+           
             }
-            else if (t->right && t->right->left && getBalance(t->right) == 1 && (getBalance(t->right->left) == 1 || getBalance(t->right->left) == -1 || getBalance(t->right->left) == 0)) {
+            else if (getBalance(t->right) == 1 && (getBalance(t->right->left) == 1 || getBalance(t->right->left) == -1 || getBalance(t->right->left) == 0)) {
                 t = B_left(t);
-
+          
             }
         }
-        t->height = height(t->left) - height(t->right);
+        t->height = std::max(height(t->left),height(t->right))+1;
         if (getBalance(t) == 2) {
             if (t->left && getBalance(t->left) == 1 || getBalance(t->left) == 0) {
 
                 t = S_right(t);
                 
             }
-            if (t->left && t->left->right && getBalance(t->left) == 1 && (getBalance(t->left->right) == 1 || getBalance(t->left->right) == -1 || getBalance(t->left->right) == 0)) {
+            if (t->left && t->left->right && getBalance(t->left) == -1 && (getBalance(t->left->right) == -1 || getBalance(t->left->right) == 1 || getBalance(t->left->right) == 0)) {
                 t = B_right(t);
+               
             }
         }
-        t->height = height(t->left) - height(t->right);
+        t->height = std::max(height(t->left), height(t->right)) + 1;
         return t;
     
     }
@@ -209,6 +210,9 @@ public:
     {
         root = NULL;
     }
+    int getBalance() {
+        return getBalance(root);
+    }
     Node* exist(T val) {
         Node* t= exist(val, root);
         
@@ -227,7 +231,7 @@ public:
     void display()
     {
         inorder(root);
-        cout << endl;
+        std::cout << endl;
     }
     
 };
@@ -239,15 +243,17 @@ int main()
     AVLTree<int> tree;
 
     // Insert values
-    for (int i = 0; i < 20; ++i) {
+    for (int i = 20; i >= 0; i-=3) {
         tree.insert(i);
+        
     }
 
-    tree.remove(6);
-    std::cout<<tree.exist(2)->data<<" ";
-    std::cout << tree.exist(3)->data << " ";
-    std::cout << tree.exist(-1) << " ";
-    tree.display();
+    for (int i = 0; i < 20; ++i) {
+        tree.remove(i);
+        
+    }
+
+    
 
     // Remove values
    
