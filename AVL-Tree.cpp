@@ -2,10 +2,9 @@
 //
 
 #include <iostream>
-
+#include <chrono>
 #include <string>
 
-using namespace std;
 
 template <typename T>
 class AVLTree {
@@ -34,11 +33,15 @@ class AVLTree {
         delete t;
     }
     Node* S_left(Node*& t) {//small left rotation
+       
         Node* u = t->right;
+        if (u == NULL) {
+            return t;
+        }
         t->right = u->left;
         u->left = t;
-        t->height = max(height(t->left), height(t->right)) + 1;
-        u->height = max(height(t->right), t->height) + 1;
+        t->height = std::max(height(t->left), height(t->right)) + 1;
+        u->height = std::max(height(t->right), t->height) + 1;
         return u;
     }
     Node* B_left(Node*& t) {  //Big left rotation
@@ -46,11 +49,15 @@ class AVLTree {
         return S_left(t);
     }
     Node* S_right(Node*& t) {
+
         Node* u = t->left;
+        if (u == NULL) {
+            return t;
+        }
         t->left = u->right;
         u->right = t;
-        t->height = max(height(t->right), height(t->left)) + 1;
-        u->height = max(height(u->left), t->height) + 1;
+        t->height = std::max(height(t->right), height(t->left)) + 1;
+        u->height = std::max(height(u->left), t->height) + 1;
         return u;
     }
     Node* B_right(Node*& t) {
@@ -93,7 +100,7 @@ class AVLTree {
             t->right = NULL;
             t->left = NULL;
         }
-        else if (t->data > x) {
+        else if (t->data >= x) {
             t->left = insert(x, t->left);
             t = balance(t);
 
@@ -102,7 +109,7 @@ class AVLTree {
             t->right = insert(x, t->right);
             t = balance(t);
         }
-        t->height = max(height(t->left), height(t->right)) + 1;
+        t->height = std::max(height(t->left), height(t->right)) + 1;
 
         return t;
     }
@@ -179,10 +186,11 @@ class AVLTree {
 
             }
         }
+
+        
         if (t == NULL)
             return t;
-        t->height = max(height(t->left), height(t->right)) + 1;
-
+       t->height = std::max(height(t->left), height(t->right)) + 1;
         
 
 
@@ -195,7 +203,7 @@ class AVLTree {
         if (t == NULL)
             return;
         inorder(t->left);
-        cout << t->data << " ";
+        std::cout << t->data << " ";
         inorder(t->right);
     }
     int getBalance(Node* t)
@@ -205,7 +213,35 @@ class AVLTree {
         else
             return height(t->left) - height(t->right);
     }
+    bool search(T val, Node* t) {
+        if (t == NULL) {
+            return 0;
+        }
+
+        while (1) {
+            if (t == NULL) {
+                return 0;
+            }
+            if (val < t->data) {
+                t = t->left;
+                continue;
+            }
+            if (val > t->data) {
+                t = t->right;
+                continue;
+            }
+            if (val == t->data) {
+                return 1;
+            }
+        }
+    }
 public:
+    bool search(T val) {
+        return search(val, root);
+    }
+    int height() {
+        return root->height;
+    }
     AVLTree()
     {
         root = NULL;
@@ -231,7 +267,7 @@ public:
     void display()
     {
         inorder(root);
-        std::cout << endl;
+        std::cout << "\n";
     }
     
 };
@@ -243,21 +279,24 @@ int main()
     AVLTree<int> tree;
 
     // Insert values
-    for (int i = 20; i >= 0; i-=3) {
-        tree.insert(i);
-        
+    auto begin = std::chrono::steady_clock::now();
+   
+    for (int i = 1000000; i >=0; --i) {
+        tree.insert(rand());
     }
-
-    for (int i = 0; i < 20; ++i) {
-        tree.remove(i);
-        
+    for (int i = 0; i <1000000; ++i) {
+        tree.remove(rand());
     }
-
     
+    
+
+    auto end = std::chrono::steady_clock::now();
+    auto elapsed_ms = std::chrono::duration_cast<std::chrono::milliseconds>(end - begin);
+    std::cout << "The time: " << elapsed_ms.count() << " ms\n";
 
     // Remove values
    
-    cout << "Tree after removing values: ";
+
  
    
     
